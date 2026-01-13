@@ -6,6 +6,7 @@ import enum
 class UserType(str, enum.Enum):
     PRIVATE = "private"
     CORPORATE = "corporate"
+    AGENCY_OWNER = "agency_owner"
 
 
 class User(Base):
