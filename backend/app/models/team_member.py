@@ -1,10 +1,11 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum as SQLEnum
-from sqlalchemy.orm import relationship 
+from sqlalchemy.orm import relationship
 from .base import Base
+import enum
 
 class TeamPosition(str, enum.Enum):
     HEAD = "head"
-    MEMBER = "member" 
+    MEMBER = "member"
 
 class TeamMember(Base):
     __tablename__ = "team_members"
