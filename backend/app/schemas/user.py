@@ -1,5 +1,5 @@
 from pydantic import EmailStr, Field, field_validator
-from typing import Optional
+from typing import Optional, Union
 from .base import BaseSchema
 from app.models.user import UserType
 
@@ -65,7 +65,7 @@ class UserLogin(BaseSchema):
     Используется для аутентификации.
     """
     
-    login: str | EmailStr
+    login_or_email: Union[str, EmailStr] 
     password: str
 
 
