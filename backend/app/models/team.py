@@ -10,7 +10,7 @@ class Team(Base):
     agency_id = Column(Integer, ForeignKey('agencies.id'), nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('agency_id', 'name', name='uq_team_agency_name')
+        UniqueConstraint('agency_id', 'name', name='uq_team_agency_name'),
     )
 
     agency = relationship("Agency", back_populates="teams")
