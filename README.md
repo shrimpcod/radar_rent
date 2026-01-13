@@ -45,4 +45,84 @@ scripts/
 ├── init-dev.sh          # Инициализация окружения
 └── run-tests.sh         # Запуск всех тестов
 ```
+## 🐳 Docker и База данных
 
+### Запуск контейнера с PostgreSQL
+
+```bash
+docker-compose up -d
+```
+
+### Остановка контейнера
+
+```bash
+docker-compose down
+```
+
+### Просмотр логов контейнера
+
+```bash
+docker-compose logs -f postgres
+```
+
+### Подключение к базе данных
+
+```bash
+docker exec -it radar_rent_db psql -U radar_user -d radar_rent
+```
+
+### Просмотр всех таблиц в базе данных
+
+```bash
+docker exec -it radar_rent_db psql -U radar_user -d radar_rent -c "\dt"
+```
+
+### Просмотр структуры конкретной таблицы
+
+```bash
+docker exec -it radar_rent_db psql -U radar_user -d radar_rent -c "\d users"
+```
+
+## 🗄️ Миграции базы данных (Alembic)
+
+### Создание новой миграции
+
+```bash
+cd backend
+python -m alembic revision --autogenerate -m "Описание изменений"
+```
+
+### Применение миграций
+
+```bash
+cd backend
+python -m alembic upgrade head
+```
+
+### Откат последней миграции
+
+```bash
+cd backend
+python -m alembic downgrade -1
+```
+
+### Откат всех миграций
+
+```bash
+cd backend
+python -m alembic downgrade base
+```
+
+### Просмотр истории миграций
+
+```bash
+cd backend
+python -m alembic history
+```
+
+### Просмотр текущей версии
+
+```bash
+cd backend
+python -m alembic current
+```
