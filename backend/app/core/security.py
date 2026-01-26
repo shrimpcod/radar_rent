@@ -9,8 +9,7 @@ from sqlalchemy import select
 
 from app.core.config import settings
 from app.models.user import User
-
-from ..db.session import get_db
+from app.db.session import get_db
 
 # Контекст для хеширования паролей
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
@@ -97,7 +96,7 @@ def decode_access_token(token: str) -> Optional[dict]:
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
-    db: AsyncSession = Depends(get_db)  # Будет заменено на реальную зависимость
+    db: AsyncSession = Depends(get_db)
 ) -> User:
     """Получение текущего пользователя из токена.
     
@@ -141,7 +140,6 @@ async def get_current_active_user(
     """Получение активного пользователя.
     
     Dependency для FastAPI. Возвращает только активных пользователей.
-    В будущем можно добавить поле is_active в модель User.
     
     Args:
         current_user: Текущий пользователь
@@ -152,10 +150,9 @@ async def get_current_active_user(
     Raises:
         HTTPException: Если пользователь неактивен
     """
-    # TODO: Добавить проверку is_active когда поле будет добавлено в модель
-    # if not current_user.is_active:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_400_BAD_REQUEST,
-    #         detail="Пользователь неактивен"
-    #     )
+    if not current_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Пользователь неактивен"
+        )
     return current_user
