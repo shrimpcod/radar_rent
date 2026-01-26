@@ -1,10 +1,6 @@
 from pydantic import EmailStr, Field, field_validator
-<<<<<<< HEAD
 from typing import Optional, Union
-=======
-from typing import Optional
 from datetime import datetime
->>>>>>> feature/auth
 from .base import BaseSchema
 from app.models.user import UserType
 
@@ -74,12 +70,8 @@ class UserLogin(BaseSchema):
     """Схема для входа пользователя.
     Используется для аутентификации.
     """
-    
-<<<<<<< HEAD
-    login_or_email: Union[str, EmailStr] 
-=======
+
     email_or_login: str | EmailStr
->>>>>>> feature/auth
     password: str
 
 
