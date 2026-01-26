@@ -13,7 +13,7 @@ from app.models.user import User
 from ..db.session import get_db
 
 # Контекст для хеширования паролей
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 # OAuth2 схема для получения токена из заголовка Authorization
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
