@@ -42,12 +42,13 @@ async def create_user(
 
 async def authenticate_user(
         db: AsyncSession,
-        email_or_login: Optional[str],
+        email: Optional[str],
+        login: Optional[str],
         password: str
-) -> Optional[User]: 
-    user = await get_user_by_email(db, email_or_login)
+) -> Optional[User]:
+    user = await get_user_by_email(db, email)
     if not user:
-        user = await get_user_by_login(db, email_or_login)
+        user = await get_user_by_login(db, login)
 
     if not user:
         return None
