@@ -65,7 +65,7 @@ class UserLogin(BaseSchema):
     Используется для аутентификации.
     """
     
-    login: str | EmailStr
+    email_or_login: str | EmailStr
     password: str
 
 
