@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Radar Rent"
+    DESCRIPTION: str = "Radar Rent — сервис мониторинга объявлений аренды недвижимости"
     DATABASE_URL: str  # Будет загружен из .env
     SECRET_KEY: str   # Будет загружен из .env
     ALGORITHM: str = "HS256"
