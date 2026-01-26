@@ -1,5 +1,10 @@
 from pydantic import EmailStr, Field, field_validator
+<<<<<<< HEAD
 from typing import Optional, Union
+=======
+from typing import Optional
+from datetime import datetime
+>>>>>>> feature/auth
 from .base import BaseSchema
 from app.models.user import UserType
 
@@ -10,7 +15,7 @@ class UserBase(BaseSchema):
     login: str
     fullname: str
     user_type: UserType = UserType.PRIVATE
-    ip_address: str
+    ip_address: Optional[str] = None
     agency_id: Optional[int] = None
     position_id: Optional[int] = None
 
@@ -39,7 +44,7 @@ class UserUpdate(BaseSchema):
     """Схема для обновления пользователя.
     Все поля опциональные, пароль не включается (отдельный endpoint для смены пароля).
     """
-    
+
     email: Optional[EmailStr] = None
     login: Optional[str] = None
     fullname: Optional[str] = None
@@ -47,15 +52,20 @@ class UserUpdate(BaseSchema):
     ip_address: Optional[str] = None
     agency_id: Optional[int] = None
     position_id: Optional[int] = None
+    is_active: Optional[bool] = None
 
 
 class UserResponse(UserBase):
     """Схема для ответа API.
     Включает ID пользователя, но НЕ включает пароль.
     """
-    
+
     id: int
-    
+    is_active: bool
+    is_superuser: bool
+    created_at: datetime
+    updated_at: datetime
+
     class Config:
         from_attributes = True
 
@@ -65,7 +75,11 @@ class UserLogin(BaseSchema):
     Используется для аутентификации.
     """
     
+<<<<<<< HEAD
     login_or_email: Union[str, EmailStr] 
+=======
+    email_or_login: str | EmailStr
+>>>>>>> feature/auth
     password: str
 
 
