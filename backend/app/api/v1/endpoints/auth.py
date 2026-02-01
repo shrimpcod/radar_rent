@@ -99,3 +99,13 @@ async def login(
         "access_token": access_token,
         "token_type": "bearer"
     }
+
+
+@router.post("/logout")
+async def logout(current_user: User = Depends(get_current_active_user)):
+    """Выход из системы.
+
+    В JWT-системе без blacklist токенов выход из системы
+    реализуется на клиенте (удаление токена из localStorage).
+    """
+    return {"message": "Успешный выход из системы"}
