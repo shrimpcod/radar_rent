@@ -7,7 +7,7 @@ from datetime import datetime
 class UserType(str, enum.Enum):
     PRIVATE = "private"
     CORPORATE = "corporate"
-
+    SUPERVISOR = "supervisor"
 
 class User(Base):
     __tablename__ = 'users'
