@@ -138,15 +138,15 @@ async def get_current_active_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
     """Получение активного пользователя.
-    
+
     Dependency для FastAPI. Возвращает только активных пользователей.
-    
+
     Args:
         current_user: Текущий пользователь
-        
+
     Returns:
         Активный пользователь
-        
+
     Raises:
         HTTPException: Если пользователь неактивен
     """
@@ -155,4 +155,61 @@ async def get_current_active_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Пользователь неактивен"
         )
+    return current_user
+
+
+async def get_current_superuser(
+    current_user: User = Depends(get_current_active_user)
+) -> User:
+    """Получение текущего суперадмина.
+
+    Dependency для FastAPI. Проверяет, что пользователь является суперадмином.
+
+    Args:
+        current_user: Текущий пользователь
+
+    Returns:
+        Суперадмин
+
+    Raises:
+        HTTPException: Если пользователь не является суперадмином
+    """
+    if not current_user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Только суперадмин имеет доступ к этому ресурсу"
+        )
+    return current_user
+
+
+async def get_current_agency_head(
+    current_user: User = Depends(get_current_active_user)
+) -> User:
+    """Получение текущего руководителя агентства.
+
+    Dependency для FastAPI. Проверяет, что пользователь является руководителем агентства
+    (пользователь типа SUPERVISOR с назначенным агентством).
+
+    Args:
+        current_user: Текущий пользователь
+
+    Returns:
+        Руководитель агентства
+
+    Raises:
+        HTTPException: Если пользователь не является руководителем агентства
+    """
+    if current_user.is_superuser:
+        # Суперадмин имеет доступ ко всем агентствам
+        return current_user
+
+    from app.models.user import UserType
+    
+    #возможно в словии нужно or
+    if current_user.user_type != UserType.SUPERVISOR and not current_user.agency_id: 
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Пользователь не является руководителем агентства"
+        )
+
     return current_user
