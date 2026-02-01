@@ -38,6 +38,19 @@ from .lead_action import (
     LeadActionResponse,
 )
 
+from .team import (
+    TeamBase,
+    TeamCreate,
+    TeamUpdate,
+    TeamResponse,
+)
+from .team_member import (
+    TeamMemberBase,
+    TeamMemberCreate,
+    TeamMemberUpdate,
+    TeamMemberResponse,
+)
+
 __all__ = [
     "BaseSchema",
     "UserBase",
@@ -66,4 +79,12 @@ __all__ = [
     "LeadActionCreate",
     "LeadActionUpdate",
     "LeadActionResponse",
+    "TeamBase",
+    "TeamCreate",
+    "TeamUpdate",
+    "TeamResponse",
+    "TeamMemberBase",
+    "TeamMemberCreate",
+    "TeamMemberUpdate",
+    "TeamMemberResponse",
 ]
