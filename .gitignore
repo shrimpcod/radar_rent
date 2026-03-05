@@ -20,4 +20,8 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
-EOF
+EOF 
+
+# Config files
+telegram_bot/bot/constants.py
+cian_parser_api/config.py
