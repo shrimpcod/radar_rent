@@ -17,3 +17,8 @@ python-multipart
 # Utilities
 python-dotenv
 httpx
+apscheduler
+
+# HTML Parsing
+beautifulsoup4
+lxml
