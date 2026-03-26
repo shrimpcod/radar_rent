@@ -3,8 +3,8 @@ from sqlalchemy import select
 from datetime import datetime, timedelta
 
 from ..models.lead import Lead
-from cian_parser_api.parser import CianParser
-from telegram_bot.bot.bot import send_lead_to_tg
+from parsers.cian.parser import CianParser
+from notifications.telegram.notifier import TelegramNotifier
 
 class CianParserService: 
     """Сервис для парсинга объявлений Циан и созранения в БД"""
@@ -12,6 +12,7 @@ class CianParserService:
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
         self.parser = CianParser()
+        self.notifier = TelegramNotifier()
 
     async def fetch_and_save_leads(self):
         """Получает объявления с Циан и сохраняет/обновляет их в БД"""
@@ -74,6 +75,6 @@ class CianParserService:
         )
 
         self.db.add(lead)
-        await send_lead_to_tg(lead)
+        await self.notifier.send(lead)
 
         
