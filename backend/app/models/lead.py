@@ -41,3 +41,5 @@ class Lead(Base):
     # Связи
     owner = relationship("Owner", back_populates="leads")
     lead_actions = relationship("LeadAction", back_populates="lead")
+
+    #TODO: добавить поле источник
