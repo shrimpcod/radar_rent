@@ -36,3 +36,7 @@ class ProxyManager:
         if proxy in self._proxies:
             self._proxies.remove(proxy)
             logger.warning(f"Прокси удалён из пула: {proxy}. Осталось: {len(self._proxies)}")
+        if not self._proxies:
+            self._proxies = load_proxies_from_env()
+            self._index = 0
+            logger.info(f"Пул прокси восстановлен: {len(self._proxies)} прокси")
