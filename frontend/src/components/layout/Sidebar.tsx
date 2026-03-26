@@ -1,9 +1,11 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useSidebarStore } from '../../store/sidebarStore'
-import { MdApartment, MdWork, MdPeople, MdBarChart, MdLogout} from 'react-icons/md'
+import { useAuthStore } from '../../store/authStore'
+import { MdApartment, MdWork, MdPeople, MdBarChart, MdLogout, MdAdminPanelSettings} from 'react-icons/md'
 import { colors } from '../../utils/colors'
 
 const navItems = [
+    {icon: MdAdminPanelSettings, label: 'Админ панель', to: '/admin' },
     {icon: MdApartment, label: 'База объявлений', to: '/listings'},
     {icon: MdWork, label: 'Объекты в работе', to: '/my_objects'},
     {icon: MdPeople, label: 'База клиентов', to: '/clients'},
@@ -16,6 +18,8 @@ const sidebarStyle = {
 
 export default function Sidebar(){
     const { collapsed, toggle } = useSidebarStore()
+    const { logout } = useAuthStore()
+    const navigate = useNavigate()
 
     return(
         <aside
@@ -54,6 +58,7 @@ export default function Sidebar(){
             <button 
                 className="flex items-center px-4 py-4 text-sm text-left hover:bg-white/10 transition border-t border-white/10 cursor-pointer"
                 style={{ color: colors.text }}
+                onClick={() => { logout(); navigate("/login")}}
             >
                 <MdLogout className='text-xl' style={{ color: colors.text}} />
                 {!collapsed && <span>Выйти</span>}

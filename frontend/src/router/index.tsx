@@ -4,6 +4,7 @@ import LoginPage from '../pages/LoginPage'
 import ListingsPage from '../pages/ListingsPage'
 import AppLayout from "../components/layout/AppLayout"
 import ProfilePage from "../pages/ProfilePage"
+import AdminPage from "../pages/AdminPage"
 
 export default function Router(){
     return (
@@ -15,6 +16,7 @@ export default function Router(){
                         <AppLayout/>
                     </ProtectedRouter>
                 }>  
+                    <Route path="/admin" element={<AdminPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/listings" element={<ListingsPage />} />
                     <Route path="/my_objects" element={<div>Объекты в работе</div>} />
