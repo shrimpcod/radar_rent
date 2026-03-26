@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --font-rubik-distressed: 'Rubik Distressed', cursive;
+  --font-rubik-bubbles: 'Rubik Bubbles', cursive;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
