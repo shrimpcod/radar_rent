@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from ..models.lead import Lead
 from parsers.cian.parser import CianParser
 from notifications.telegram.notifier import TelegramNotifier
+from app.core.ws_manager import ws_manager
+from app.schemas.lead import LeadResponse
 
 class CianParserService: 
     """Сервис для парсинга объявлений Циан и созранения в БД"""
@@ -75,6 +77,9 @@ class CianParserService:
         )
 
         self.db.add(lead)
+        await self.db.flush()
+        lead_data = LeadResponse.model_validate(lead).model_dump(mode='json')
+        await ws_manager.broadcast(lead_data)
         await self.notifier.send(lead)
 
         

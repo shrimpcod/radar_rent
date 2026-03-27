@@ -3,9 +3,10 @@ import type { Lead } from '../../types/listings'
 
 interface Props{
     leads: Lead[];
+    newLeadIds: Set<number>
 }
 
-export default function ListingsTable({ leads }: Props) {
+export default function ListingsTable({ leads, newLeadIds }: Props) {
     const [favorites, setFavorites] = useState<'all' | 'favorites' | 'filters'>('all')
 
     const filterButtons = [
@@ -50,15 +51,17 @@ export default function ListingsTable({ leads }: Props) {
 
                 <tbody>
                     {leads.map((lead) => (
-                        <tr key={lead.id} className='border-t border-gray-100 hover:bg-gray-50 text-sm text-gray-700'>
-                            <td className='px-4 py-3'>{lead.created_offer_at ? new Date(lead.created_offer_at).toLocaleString('ru-RU') : '-'}</td>
-                            <td className='px-4 py-3'>{lead.rooms_count}-к, {lead.area} м², {lead.floor}/{lead.floors_count} эт.</td>
-                            <td className='px-4 py-3'>ЦИАН</td>
-                            <td className='px-4 py-3'>{lead.price.toLocaleString('ru-RU')}</td>
-                            <td className='px-4 py-3'>{lead.address}</td>
-                            <td className='px-4 py-3'>{lead.phone_number}</td>
-                            <td className='px-4 py-3'>Статус</td>
-                            <td className='px-4 py-3'>
+                        <tr 
+                            key={lead.id} 
+                            className={`border-t border-gray-100 text-sm text-gray-700 transition-colors duration-300 ${newLeadIds.has(lead.id) ? 'bg-green-100' : 'hover:bg-gray-50'}`}>
+                                <td className='px-4 py-3'>{lead.created_offer_at ? new Date(lead.created_offer_at).toLocaleString('ru-RU') : '-'}</td>
+                                <td className='px-4 py-3'>{lead.rooms_count}-к, {lead.area} м², {lead.floor}/{lead.floors_count} эт.</td>
+                                <td className='px-4 py-3'>ЦИАН</td>
+                                <td className='px-4 py-3'>{lead.price.toLocaleString('ru-RU')}</td>
+                                <td className='px-4 py-3'>{lead.address}</td>
+                                <td className='px-4 py-3'>{lead.phone_number}</td>
+                                <td className='px-4 py-3'>Статус</td>
+                                <td className='px-4 py-3'>
                                 <button className='text-[#3D3FAA] hover:underline text-xs'>П</button>
                             </td>
                         </tr>
