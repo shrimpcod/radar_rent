@@ -20,9 +20,6 @@ from .agency import (
     AgencyResponse,
 )
 from .lead import (
-    LeadBase,
-    LeadCreate,
-    LeadUpdate,
     LeadResponse,
 )
 from .lead_status import (
@@ -67,9 +64,6 @@ __all__ = [
     "AgencyCreate",
     "AgencyUpdate",
     "AgencyResponse",
-    "LeadBase",
-    "LeadCreate",
-    "LeadUpdate",
     "LeadResponse",
     "LeadStatusBase",
     "LeadStatusCreate",
