@@ -1,8 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from ..models.lead import Lead
 from ..core.security import get_password_hash, verify_password
 from typing import Optional, List
+
 
 async def get_leads(
         db: AsyncSession, 
@@ -16,3 +17,7 @@ async def get_leads(
         .limit(limit)
     )
     return result.scalars().all()
+
+async def get_leads_count(db: AsyncSession) -> int:
+    result = await db.execute(select(func.count()).select_from(Lead))
+    return result.scalar()

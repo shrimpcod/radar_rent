@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from ....db.session import get_db
-from ....services.lead_services import get_leads
+from ....services.lead_services import get_leads, get_leads_count
 from ....schemas.lead import LeadResponse
 
 router = APIRouter()
@@ -16,3 +16,8 @@ async def get_all_leads(
 ):
     leads = await get_leads(db, skip=skip, limit=limit)
     return leads
+
+@router.get("/count")
+async def leads_count(db: AsyncSession = Depends(get_db)):
+    count = await get_leads_count(db)
+    return {"count": count}
