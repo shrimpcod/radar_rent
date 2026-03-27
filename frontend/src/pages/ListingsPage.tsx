@@ -1,6 +1,8 @@
 import StatsCards from "../features/listings/StatsCards"
 import ListingsTable from "../features/listings/ListingsTable"
 import type { LeadStats, Lead } from "../types/listings"
+import { useQuery } from "@tanstack/react-query"
+import { getLeads } from "../api/listings"
 
 const mockStats: LeadStats = {
     total_calls: 12,
@@ -9,32 +11,20 @@ const mockStats: LeadStats = {
     not_closed: 3
 }
 
-const mockLeads: Lead[] = [
-    {
-        id: 1,
-        created_offer_at: '20.03.2026 10:30',
-        object_info: '37 м², 0-к, 5/16 эт.',
-        source: 'ЦИАН',
-        price: 60000,
-        address: 'Россия, Москва, Керамический проезд, 63к1',
-        phone_number: '+79862741953',
-    }, 
-    {
-        id: 2,
-        created_offer_at: '20.03.2026 10:30',
-        object_info: '37 м², 0-к, 5/16 эт.',
-        source: 'ЦИАН',
-        price: 60000,
-        address: 'Россия, Москва, Керамический проезд, 63к1',
-        phone_number: '+79862741953',
-    }
-]
-
 export default function ListingsPage() {
+    const { data: leads, isLoading } = useQuery<Lead[]>({
+        queryKey: ["leads"],
+        queryFn: getLeads 
+    })
+
     return(
         <div className="p-6" style={{ minHeight: '100%' }}>
             <StatsCards stats={mockStats} />
-            <ListingsTable leads={mockLeads} />
+            {isLoading ? (
+                <div className="text-gray-400 text-sm p-4">Загрузка...</div>
+            ) : (
+                <ListingsTable leads={leads ?? []} />
+            )}
         </div>
     )
 }

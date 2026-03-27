@@ -1,12 +1,20 @@
-export interface Lead{
-    id: number;
-    created_offer_at: string;
-    object_info: string;
-    source: string;
+export interface Lead {
+    id: number;                                                                                                                                    
+    external_id: string;
+    external_url: string | null;
     price: number;
+    rooms_count: number;
+    area: number;
+    floor: number;
+    floors_count: number;
+    city: string;
+    metro_station: string | null;
     address: string;
-    phone_number: string;
-    status?: string;
+    phone_number: string | null;
+    is_early_access: boolean;
+    phone_reveal_at: string | null;
+    published_offer_at: string | null;
+    created_offer_at: string | null;
 }
 
 export interface LeadStats{

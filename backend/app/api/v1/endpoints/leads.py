@@ -8,7 +8,7 @@ from ....schemas.lead import LeadResponse
 
 router = APIRouter()
 
-@router.get("/leads", response_model=List[LeadResponse])
+@router.get("/", response_model=List[LeadResponse])
 async def get_all_leads(
     db: AsyncSession = Depends(get_db),
     skip: int = Query(0, ge=0, description="Количество пропускаемых записей"),
