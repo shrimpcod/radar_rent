@@ -38,5 +38,6 @@ class Lead(Base):
     
     # Связи
     lead_actions = relationship("LeadAction", back_populates="lead")
+    favorites = relationship("Favorite", back_populates="lead")
 
     #TODO: добавить поле источник
