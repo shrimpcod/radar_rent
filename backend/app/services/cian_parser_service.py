@@ -7,6 +7,7 @@ from parsers.cian.parser import CianParser
 from notifications.telegram.notifier import TelegramNotifier
 from app.core.ws_manager import ws_manager
 from app.schemas.lead import LeadResponse
+from ..utils.delays import random_delay
 
 class CianParserService: 
     """Сервис для парсинга объявлений Циан и созранения в БД"""
@@ -18,6 +19,7 @@ class CianParserService:
 
     async def fetch_and_save_leads(self):
         """Получает объявления с Циан и сохраняет/обновляет их в БД"""
+        await random_delay()
 
         print(f"[{datetime.now()}] Запуск парсера циан")\
         
@@ -74,6 +76,8 @@ class CianParserService:
 
             is_early_access=data['is_early_access'],
             phone_reveal_at=data['phone_reveal_at'],
+            source=data.get('source', 'cian'),
+            photo_urls=data.get('photos', []),
         )
 
         self.db.add(lead)
