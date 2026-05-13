@@ -27,6 +27,9 @@ class ProxyManager:
         """Возвращает следующий прокси по кругу"""
         if not self._proxies:
             return None
+        if self._index >= len(self._proxies):
+            self._index = 0
+
         proxy = self._proxies[self._index]
         self._index = (self._index + 1) % len(self._proxies)
         return proxy
@@ -35,6 +38,7 @@ class ProxyManager:
         """Удаляет прокси из пула если он заблокирован"""
         if proxy in self._proxies:
             self._proxies.remove(proxy)
+            self._index = 0
             logger.warning(f"Прокси удалён из пула: {proxy}. Осталось: {len(self._proxies)}")
         if not self._proxies:
             self._proxies = load_proxies_from_env()

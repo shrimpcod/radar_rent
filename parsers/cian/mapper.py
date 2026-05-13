@@ -22,6 +22,7 @@ def map_offer(offer: dict) -> dict:
         return {
             # ID и URL
             'cian_id': offer.get('cianId'),
+            'source': 'cian',
             'external_url': offer.get('fullUrl'),
                     
             # Квартира
