@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, Float, DateTime, ForeignKey, Text
+from sqlalchemy import Boolean, Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -36,6 +36,8 @@ class Lead(Base):
     phone_reveal_at = Column(DateTime, nullable=True)
 
 
+    source = Column(String, nullable=True)  # Источник (cian, avito и т.д.)
+    photo_urls = Column(JSON, nullable=True)  # Массив URL фотографий
     notes = Column(Text, nullable=True)  # Заметки (опционально)
     
     # Связи
