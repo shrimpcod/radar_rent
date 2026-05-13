@@ -14,3 +14,7 @@ class BaseParser(ABC):
     @abstractmethod
     async def parse_offer(self, offer: dict) -> dict:
         """Преобразовать одно объявление в словарь для БД"""
+
+    @abstractmethod
+    async def fetch_single_listing(self, external_id: str) -> dict | None:
+        """Получить данные одного конкретного объявления по его ID"""
