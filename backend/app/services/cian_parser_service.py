@@ -3,7 +3,7 @@ from sqlalchemy import select
 from datetime import datetime, timedelta
 
 from ..models.lead import Lead
-from parsers.cian.parser import CianParser
+from backend.workers.parsers.cian.parser import CianParser
 from notifications.telegram.notifier import TelegramNotifier
 from app.core.ws_manager import ws_manager
 from app.schemas.lead import LeadResponse
@@ -38,12 +38,12 @@ class CianParserService:
     
     async def _save_lead(self, offer: dict):
         parsed_data = self.parser.parse_offer(offer)
-        cian_id = parsed_data["cian_id"]
+        cian_id = parsed_data["external_id"]
 
-        if not parsed_data['published_at']:
+        if not parsed_data['published_offer_at']:
             return
         
-        time_diff = datetime.now() - parsed_data['published_at']
+        time_diff = datetime.now() - parsed_data['published_offer_at']
         is_fresh = time_diff <= timedelta(minutes=15)
 
         result = await self.db.execute(
