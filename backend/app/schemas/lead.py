@@ -22,4 +22,6 @@ class LeadResponse(BaseSchema):
     phone_reveal_at: Optional[datetime] = None
     published_offer_at: Optional[datetime] = None
     created_offer_at: Optional[datetime] = None
+    source: Optional[str] = None
+    photo_urls: Optional[list[str]] = None
 
