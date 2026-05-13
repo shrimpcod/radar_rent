@@ -44,4 +44,15 @@ class CianParser(BaseParser):
         
     def parse_offer(self, offer) -> dict:
         return map_offer(offer)
+    
+    async def fetch_single_listing(self, external_id: str) -> dict | None:
+        """
+            TODO: Сделать запрос к API ЦИАН для получения данных одного объявления.
+            Пока возвращаем None. Понадобится для Delayed Queue.
+            https://api.cian.ru/search-offers/v2/get-offer-desktop/?id=....
+        """
+        logger.info(f"Запрос конкретного объявления {external_id}")
+        # Здесь будет логика запроса по ID
+        return None
+        
         

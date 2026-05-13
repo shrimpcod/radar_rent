@@ -21,7 +21,7 @@ def map_offer(offer: dict) -> dict:
         
         return {
             # ID и URL
-            'cian_id': offer.get('cianId'),
+            'external_id': offer.get('cianId'),
             'source': 'cian',
             'external_url': offer.get('fullUrl'),
                     
@@ -44,8 +44,8 @@ def map_offer(offer: dict) -> dict:
             'phone_number': _get_phone_number(offer),
 
             #Время
-            'created_at': _parse_datetime(offer.get('creationDate')),
-            'published_at': _parse_timestamp(added_timestamp),
+            'created_offer_at': _parse_datetime(offer.get('creationDate')),
+            'published_offer_at': _parse_timestamp(added_timestamp),
 
             # Ранний доступ
             'is_early_access': is_early_access,
