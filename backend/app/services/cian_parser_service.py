@@ -56,7 +56,7 @@ class CianParserService:
 
     async def _create_lead(self, data: dict): 
         lead = Lead(
-            external_id=str(data["cian_id"]),
+            external_id=str(data["external_id"]),
             external_url=data['external_url'],
             price=data['price'],
             rooms_count=data['rooms_count'],
@@ -71,12 +71,12 @@ class CianParserService:
             #owner_offer_id=data['owner_id'],
             phone_number=data['phone_number'],
 
-            created_offer_at=data['created_at'],
-            published_offer_at=data['published_at'],
+            created_offer_at=data['created_offer_at'],
+            published_offer_at=data['published_offer_at'],
 
             is_early_access=data['is_early_access'],
             phone_reveal_at=data['phone_reveal_at'],
-            source=data.get('source', 'cian'),
+            source=data.get('source'),
             photo_urls=data.get('photos', []),
         )
 
