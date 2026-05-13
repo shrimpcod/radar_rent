@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     DESCRIPTION: str = "Radar Rent — сервис мониторинга объявлений аренды недвижимости"
     DATABASE_URL: str  # Будет загружен из .env
     SECRET_KEY: str   # Будет загружен из .env
+    REDIS_URL: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
 
