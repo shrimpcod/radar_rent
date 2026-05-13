@@ -15,6 +15,8 @@ export interface Lead {
     phone_reveal_at: string | null;
     published_offer_at: string | null;
     created_offer_at: string | null;
+    source: string | null;
+    photo_urls: string[] | null;
 }
 
 export interface LeadStats{
@@ -22,4 +24,14 @@ export interface LeadStats{
     closed: number;
     no_answer: number;
     not_closed: number;
+}
+
+export interface LeadAction {
+    id: number
+    user_id: number
+    lead_id: number
+    is_favorite: boolean
+    lead_status_id: number | null
+    call_id: number | null
+    last_action_time: string
 }
