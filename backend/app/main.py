@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
     
     scheduler.add_job(
        parse_cian_taks,
-       trigger=IntervalTrigger(minutes=5, jitter=60),
+       trigger=IntervalTrigger(minutes=60, jitter=60),
        id='cian_parser',
        name='Parser cian',
        replace_existing=True
