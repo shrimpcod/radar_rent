@@ -1,6 +1,14 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, Enum as SQLEnum, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from .base import Base
+import enum
+
+class ActionType(str, enum.Enum):
+    ADD_FAVORITE = "add_favorite"
+    DELETE_FAVORITE = "delete_favorite"
+    CALL = "call"
+    DOWNLOAD_PHOTOS = "download_photos"
+    GO_LINK = "go_link"
 
 class LeadAction(Base):
     __tablename__ = 'lead_actions'
@@ -11,8 +19,8 @@ class LeadAction(Base):
     lead_status_id = Column(Integer, ForeignKey('lead_statuses.id'), nullable=True)
     call_id = Column(Integer, ForeignKey('calls.id'), nullable=True)
     
-    is_favorite = Column(Boolean, default=False, nullable=False)
-    last_action_time = Column(DateTime, nullable=False)
+    action_type = Column(SQLEnum(ActionType), nullable=False)
+    action_date = Column(DateTime, nullable=False)
     
     user = relationship("User", back_populates="lead_actions")
     lead = relationship("Lead", back_populates="lead_actions")

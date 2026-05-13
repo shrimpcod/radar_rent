@@ -13,6 +13,9 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
+    agency_id = Column(Integer, ForeignKey("agencies.id"), nullable=True)
+    position_id = Column(Integer, ForeignKey("positions.id"), nullable=True)
+
     email = Column(String, unique=True, index=True, nullable=False)
     login = Column(String, unique=True, index=True, nullable=False)
     fullname = Column(String, nullable=False)
@@ -24,11 +27,10 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    agency_id = Column(Integer, ForeignKey("agencies.id"), nullable=True)
-    position_id = Column(Integer, ForeignKey("positions.id"), nullable=True)
-
     agency = relationship("Agency", back_populates="users")
     position = relationship("Position", back_populates="users")
     team_members = relationship("TeamMember", back_populates="user")
     user_messengers = relationship("UserMessenger", back_populates="user")
     lead_actions = relationship("LeadAction", back_populates="user")
+    favorites = relationship("Favorite", back_populates="user")
+    sessions = relationship("UserSession", back_populates="user")
