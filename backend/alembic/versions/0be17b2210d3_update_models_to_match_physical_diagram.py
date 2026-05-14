@@ -46,9 +46,12 @@ def upgrade() -> None:
     op.drop_index(op.f('ix_owner_contacts_id'), table_name='owner_contacts')
     op.drop_table('owner_contacts')
     op.drop_index(op.f('ix_owners_id'), table_name='owners')
+    op.drop_constraint('leads_owner_id_fkey', 'leads', type_='foreignkey')
     op.drop_table('owners')
-    op.add_column('lead_actions', sa.Column('action_type', sa.Enum('ADD_FAVORITE', 'DELETE_FAVORITE', 'CALL', 'DOWNLOAD_PHOTOS', 'GO_LINK', name='actiontype'), nullable=False))
-    op.add_column('lead_actions', sa.Column('action_date', sa.DateTime(), nullable=False))
+    actiontype_enum = postgresql.ENUM('ADD_FAVORITE', 'DELETE_FAVORITE', 'CALL', 'DOWNLOAD_PHOTOS', 'GO_LINK', name='actiontype')
+    actiontype_enum.create(op.get_bind())
+    op.add_column('lead_actions', sa.Column('action_type', sa.Enum('ADD_FAVORITE', 'DELETE_FAVORITE', 'CALL', 'DOWNLOAD_PHOTOS', 'GO_LINK', name='actiontype'), nullable=False, server_default='GO_LINK'))
+    op.add_column('lead_actions', sa.Column('action_date', sa.DateTime(), nullable=False, server_default='now()'))
     op.drop_column('lead_actions', 'is_favorite')
     op.drop_column('lead_actions', 'last_action_time')
     op.alter_column('leads', 'external_url',
@@ -63,7 +66,6 @@ def upgrade() -> None:
                existing_type=sa.DOUBLE_PRECISION(precision=53),
                type_=sa.Numeric(),
                existing_nullable=False)
-    op.drop_constraint(op.f('leads_owner_id_fkey'), 'leads', type_='foreignkey')
     op.drop_column('leads', 'owner_id')
     op.drop_column('leads', 'notes')
     # ### end Alembic commands ###
