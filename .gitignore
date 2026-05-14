@@ -25,7 +25,9 @@ EOF
 # Config files
 telegram_bot/bot/constants.py
 cian_parser_api/config.py
-z_description_vkr
+#z_description_vkr
 z_explanation
 z_source
 z_other_files
+#z_esoft
+#gemini --resume 'ff71fd78-92c9-4a7a-b430-67324b08df56'
