@@ -1,194 +1,194 @@
-# Описание бэкенда
+# Бэкенд — Radar Rent
 
-## 📁 Backend (Python + FastAPI)
-```bash
-backend/
-├── app/
-│   ├── api/                    # API эндпоинты
-│   │   ├── v1/                 # Версия API
-│   │   │   ├── endpoints/
-│   │   │   │   ├── auth.py    # Авторизация
-│   │   │   │   ├── users.py   # Пользователи
-│   │   │   │   ├── agencies.py # Агентства
-│   │   │   │   ├── positions.py # Должности
-│   │   │   │   ├── teams.py   # Команды
-│   │   │   │   ├── team_members.py # Участники команд
-│   │   │   │   ├── leads.py   # Лиды
-│   │   │   │   └── __init__.py
-│   │   │   └── __init__.py
-│   │   └── __init__.py
-│   ├── core/                   # Ядро приложения
-│   │   ├── config.py           # Конфигурация
-│   │   ├── security.py         # Безопасность, JWT
-│   │   └── __init__.py
-│   ├── models/                 # SQLAlchemy модели
-│   │   ├── base.py             # Базовый класс
-│   │   ├── user.py             # Пользователь
-│   │   ├── agency.py           # Агентство
-│   │   ├── position.py         # Должность
-│   │   ├── team.py             # Команда
-│   │   ├── team_member.py      # Участник команды
-│   │   ├── messenger.py        # Мессенджер
-│   │   ├── user_messenger.py   # Привязанные мессенджеры
-│   │   ├── lead.py             # Лид
-│   │   ├── owner.py            # Собственник
-│   │   ├── owner_contact.py    # Контакт собственника
-│   │   ├── lead_status.py      # Статус лида
-│   │   ├── call.py             # Звонок
-│   │   ├── lead_action.py      # Действия по лиду
-│   │   └── __init__.py
-│   ├── schemas/                # Pydantic схемы
-│   │   ├── base.py             # Базовый класс
-│   │   ├── user.py             # Схемы пользователя
-│   │   ├── agency.py           # Схемы агентства
-│   │   ├── position.py         # Схемы должности
-│   │   ├── lead.py             # Схемы лида
-│   │   ├── lead_status.py      # Схемы статуса лида
-│   │   ├── lead_action.py      # Схемы действия по лиду
-│   │   └── __init__.py
-│   ├── services/               # Бизнес-логика
-│   │   ├── user_service.py     # Сервис пользователя
-│   │   └── __init__.py
-│   ├── db/                     # Работа с базой данных
-│   │   ├── database.py         # Инициализация БД
-│   │   ├── session.py          # Сессия БД
-│   │   └── migrations/         # Alembic миграции
-│   ├── utils/                  # Вспомогательные функции
-│   │   └── __init__.py
-│   ├── tests/                  # Тесты бэкенда
-│   │   ├── test_api/
-│   │   ├── test_services/
-│   │   └── conftest.py
-│   ├── main.py                 # Точка входа
-│   └── __init__.py
-├── scripts/                    # Скрипты
-│   └── seed_admin.py          # Создание суперадмина
-├── requirements/
-│   ├── base.txt                # Основные зависимости
-│   ├── dev.txt                 # Для разработки
-│   └── prod.txt                # Для продакшена
-├── alembic/                    # Миграции
-│   ├── versions/               # Версии миграций
-│   └── env.py                  # Окружение Alembic
-├── alembic.ini                 # Конфиг миграций
-├── Dockerfile                  # Dockerfile для бэкенда
-├── pytest.ini                  # Конфиг тестов
-└── .env.example                # Пример переменных окружения
+REST API сервер для управления объявлениями об аренде, пользователями и агентствами.
+Также содержит планировщик парсера и WebSocket сервер для real-time обновлений.
+
+---
+
+## Стек технологий
+
+| Технология | Назначение |
+|---|---|
+| FastAPI | HTTP фреймворк, автодокументация |
+| SQLAlchemy (async) | ORM для работы с БД |
+| PostgreSQL | База данных |
+| Alembic | Миграции схемы БД |
+| Pydantic v2 | Валидация данных, схемы запросов/ответов |
+| APScheduler | Планировщик задач (запуск парсера) |
+| python-jose | JWT токены |
+| passlib + argon2 | Хеширование паролей |
+| pydantic-settings | Конфигурация из .env |
+
+---
+
+## Структура проекта
+
+```
+backend/app/
+├── main.py              # Точка входа, CORS, планировщик, lifespan
+├── api/v1/
+│   ├── __init__.py      # Регистрация всех роутеров
+│   └── endpoints/       # Эндпоинты по ресурсам
+│       ├── auth.py      # POST /auth/login
+│       ├── leads.py     # GET /leads, GET /leads/count
+│       ├── agencies.py  # CRUD /agencies
+│       ├── users.py     # CRUD /users
+│       ├── teams.py     # CRUD /teams
+│       ├── team_members.py  # CRUD /team_members
+│       ├── positions.py # CRUD /positions
+│       └── ws.py        # WebSocket /ws
+├── core/
+│   ├── config.py        # Настройки из .env (Settings)
+│   ├── security.py      # JWT, хеширование паролей, dependencies
+│   └── ws_manager.py    # Менеджер WebSocket соединений
+├── db/
+│   └── session.py       # Движок БД, фабрика сессий, get_db()
+├── models/              # SQLAlchemy модели (таблицы)
+├── schemas/             # Pydantic схемы (валидация)
+└── services/            # Бизнес-логика
 ```
 
 ---
 
-## ✅ Что уже сделано
+## API эндпоинты
 
-### Настройка проекта
-- ✅ Создана структура проекта
-- ✅ Настроено виртуальное окружение
-- ✅ Установлены зависимости (FastAPI, SQLAlchemy, Alembic, Pydantic, Argon2, AsyncPG)
-- ✅ Настроен `.gitignore`
-- ✅ Создан `docker-compose.yml` для PostgreSQL
-- ✅ Настроены переменные окружения (`.env`)
+Базовый URL: `/api/v1`
 
-### Модели базы данных (13 моделей)
-- ✅ `backend/app/models/base.py` — базовый класс
-- ✅ `backend/app/models/user.py` — пользователь (с полями `user_type`, `agency_id`, `position_id`, `ip_address`, `is_active`, `is_superuser`)
-- ✅ `backend/app/models/agency.py` — агентство
-- ✅ `backend/app/models/position.py` — должность (глобальные)
-- ✅ `backend/app/models/team.py` — команда
-- ✅ `backend/app/models/team_member.py` — участник команды (с ролью HEAD/MEMBER)
-- ✅ `backend/app/models/messenger.py` — мессенджер
-- ✅ `backend/app/models/user_messenger.py` — привязанные мессенджеры пользователя
-- ✅ `backend/app/models/lead.py` — лид (объявление аренды)
-- ✅ `backend/app/models/owner.py` — собственник
-- ✅ `backend/app/models/owner_contact.py` — контакт собственника
-- ✅ `backend/app/models/lead_status.py` — статус лида
-- ✅ `backend/app/models/call.py` — звонок
-- ✅ `backend/app/models/lead_action.py` — действия по лиду
-- ✅ Настроены связи (relationships) между моделями
+| Метод | Путь | Описание |
+|---|---|---|
+| POST | `/auth/login` | Вход, возвращает JWT токен |
+| GET | `/leads` | Список объявлений (skip, limit) |
+| GET | `/leads/count` | Количество объявлений |
+| GET/POST/PUT/DELETE | `/agencies` | CRUD агентств |
+| GET/POST/PUT/DELETE | `/users` | CRUD пользователей |
+| GET/POST/PUT/DELETE | `/teams` | CRUD команд |
+| GET/POST/PUT/DELETE | `/team_members` | CRUD участников команд |
+| GET/POST/DELETE | `/positions` | CRUD должностей |
+| WS | `/ws` | WebSocket подключение |
 
-### Подключение к базе данных
-- ✅ `backend/app/core/config.py` — настройки приложения (Pydantic Settings)
-- ✅ `backend/app/db/session.py` — сессия БД (async)
-- ✅ `backend/app/db/database.py` — функции инициализации БД
-- ✅ Настроен асинхронный движок SQLAlchemy 2.0
-- ✅ Настроен dependency injection для сессии БД
-
-### Миграции (Alembic)
-- ✅ Инициализирован Alembic
-- ✅ Настроен `backend/alembic/env.py` для async БД
-- ✅ Настроен `backend/alembic.ini`
-- ✅ Создана первая миграция (`Initial migration`)
-- ✅ Создана миграция для добавления `ip_address`, `is_active`, `is_superuser` в User
-- ✅ Миграции применены к БД
-- ✅ Проверено создание таблиц в PostgreSQL
-
-### Pydantic схемы
-- ✅ `backend/app/schemas/base.py` — базовый класс `BaseSchema`
-- ✅ `backend/app/schemas/user.py` — схемы пользователя (Create, Update, Response, Login, ChangePassword)
-- ✅ `backend/app/schemas/agency.py` — схемы агентства (Create, Update, Response)
-- ✅ `backend/app/schemas/position.py` — схемы должности (Create, Update, Response)
-- ✅ `backend/app/schemas/lead.py` — схемы лида (Create, Update, Response)
-- ✅ `backend/app/schemas/lead_status.py` — схемы статуса лида (Create, Update, Response)
-- ✅ `backend/app/schemas/lead_action.py` — схемы действия по лиду (Create, Update, Response)
-
-### Аутентификация и безопасность
-- ✅ `backend/app/core/security.py` — функции безопасности
-  - `verify_password()` — проверка пароля (Argon2)
-  - `get_password_hash()` — хеширование пароля (Argon2)
-  - `create_access_token()` — создание JWT токена
-  - `decode_access_token()` — декодирование JWT токена
-  - `get_current_user()` — получение текущего пользователя из токена
-  - `get_current_active_user()` — проверка активности пользователя
-- ✅ Настроены `SECRET_KEY` и `ALGORITHM`
-- ✅ Реализована IP-валидация для входа (пользователи могут входить только с указанного IP)
-
-### API Endpoints
-- ✅ `backend/app/api/v1/endpoints/auth.py` — эндпоинты аутентификации
-  - `POST /api/v1/auth/register` — регистрация (только для авторизованных пользователей)
-  - `POST /api/v1/auth/login` — вход (с IP-валидацией)
-  - `POST /api/v1/auth/logout` — выход
-- ✅ `backend/app/api/v1/__init__.py` — APIRouter для v1
-- ✅ `backend/app/main.py` — точка входа (FastAPI приложение, CORS)
-
-### Сервисы
-- ✅ `backend/app/services/user_service.py` — бизнес-логика для пользователей
-  - `get_user_by_email()` — поиск по email
-  - `get_user_by_login()` — поиск по login
-  - `create_user()` — создание пользователя
-  - `authenticate_user()` — аутентификация пользователя
-
-### Seed скрипт
-- ✅ `backend/scripts/seed_admin.py` — создание суперадмина
-  - Email: `admin@radarrent.ru`
-  - Login: `adminRR`
-  - Password: `AdminRR`
-  - IP: `None` (может входить с любого IP)
-
-### Документация
-- ✅ Создан `README.md` с описанием проекта
-- ✅ Создан `GIT_WORKFLOW.md` с инструкциями по Git
-- ✅ Создан `DAILY_PLAN.md` — план работы по проекту
+Документация: `http://localhost:8000/api/docs` (Swagger UI)
 
 ---
 
-## 🚀 Запуск проекта
+## Ключевые архитектурные решения
 
-### Запуск PostgreSQL
+### Lifespan — запуск планировщика
+
+```python
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler.start()
+    scheduler.add_job(
+        parse_cian_tasks,
+        trigger=IntervalTrigger(minutes=5, jitter=60),
+    )
+    await parse_cian_tasks()  # первый запуск сразу при старте
+    yield
+```
+
+При старте приложения сразу запускается парсер, затем каждые 5 минут ± 60 секунд случайного jitter.
+`jitter` нужен чтобы не нагружать сервер строго по расписанию и имитировать непредсказуемое поведение.
+
+### Асинхронная БД
+
+```python
+engine = create_async_engine(settings.DATABASE_URL)
+AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession)
+
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+```
+
+Все запросы к БД асинхронные — сервер не блокируется пока ждёт ответа от PostgreSQL.
+`get_db()` — FastAPI dependency, автоматически закрывает сессию после запроса.
+
+### Схемы Pydantic — валидация и сериализация
+
+```python
+class BaseSchema(BaseModel):
+    class Config:
+        from_attributes = True  # создание схемы из SQLAlchemy модели
+```
+
+Все схемы наследуют `BaseSchema`. `from_attributes = True` позволяет передавать
+SQLAlchemy объект напрямую в Pydantic — он сам извлечёт нужные поля.
+
+```python
+@router.get("/leads", response_model=List[LeadResponse])
+async def get_all_leads(...):
+    leads = await get_leads(db, skip=skip, limit=limit)
+    return leads  # SQLAlchemy объекты → Pydantic автоматически
+```
+
+### JWT авторизация
+
+```python
+# Токен создаётся при логине
+token = create_access_token({"sub": str(user.id)})
+
+# Защищённые эндпоинты используют dependency
+async def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_db)):
+    payload = decode_access_token(token)
+    user = await db.get(User, int(payload["sub"]))
+    return user
+```
+
+Токен живёт 1440 минут (24 часа), задаётся в `.env`.
+Пароли хешируются через `argon2` — современный безопасный алгоритм.
+
+### WebSocket менеджер
+
+```python
+class ConnectionManager:
+    async def connect(self, websocket: WebSocket)
+    def disconnect(self, websocket: WebSocket)
+    async def broadcast(self, data: dict)  # отправляет всем подключённым клиентам
+```
+
+Когда парсер сохраняет новый лид — вызывается `broadcast()`.
+Все подключённые браузеры получают данные мгновенно без перезагрузки страницы.
+
+---
+
+## Модели БД (таблицы)
+
+| Модель | Таблица | Описание |
+|---|---|---|
+| Lead | leads | Объявление об аренде |
+| User | users | Пользователь системы |
+| Agency | agencies | Агентство недвижимости |
+| Team | teams | Команда внутри агентства |
+| TeamMember | team_members | Участник команды + роль |
+| Position | positions | Должность пользователя |
+| Owner | owners | Собственник квартиры |
+| LeadAction | lead_actions | Действия с лидом (звонки) |
+
+---
+
+## Конфигурация (.env)
+
+```
+DATABASE_URL=postgresql+asyncpg://user:pass@localhost/dbname
+SECRET_KEY=your-secret-key
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+PROXIES=http://user:pass@host:port,...
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_CHAT_ID=...
+TELEGRAM_PROXY=http://127.0.0.1:10801
+```
+
+---
+
+## Запуск
+
 ```bash
+cd backend
+alembic upgrade head        # применить миграции
+py -3.12 -m venv venv # применятеся при установке проекта на комп
 docker-compose up -d
+./venv/Scripts/activate # для активации виртуального окружения
+uvicorn app.main:app --reload
 ```
 
-### Запуск бэкенда
-```bash
-cd backend
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Создание суперадмина
-```bash
-cd backend
-python scripts/seed_admin.py
-```
-
-### Доступ к API
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+Сервер запускается на `http://localhost:8000`.

@@ -25,3 +25,8 @@ EOF
 # Config files
 telegram_bot/bot/constants.py
 cian_parser_api/config.py
+z_description_vkr
+z_explanation
+z_source
+z_other_files
+scripts/check_lead.py
