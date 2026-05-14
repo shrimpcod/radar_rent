@@ -9,6 +9,12 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
 
+    TELEGRAM_BOT_TOKEN: str = ""
+    TELEGRAM_CHAT_ID: int = 0
+    TELEGRAM_PROXY: str | None = None
+
+    PROXIES: str = ""
+    
     class Config:
         env_file = ".env"
 

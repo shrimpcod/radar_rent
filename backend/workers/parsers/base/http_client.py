@@ -1,5 +1,5 @@
 from curl_cffi.requests import AsyncSession
-from backend.workers.parsers.utils.proxy import ProxyManager, load_proxies_from_env
+from ..utils.proxy import ProxyManager, load_proxies_from_env
 
 _proxy_manager = ProxyManager(load_proxies_from_env())
 

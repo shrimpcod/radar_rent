@@ -1,16 +1,12 @@
-import os
 import logging
-from pathlib import Path
-from dotenv import load_dotenv
-
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
 
 def load_proxies_from_env() -> list[str]:
     """Читает список прокси из переменной PROXIES в .env"""
-    raw = os.getenv("PROXIES", "")
+    raw = settings.PROXIES
     return [p.strip() for p in raw.split(",") if p.strip()]
 
 
