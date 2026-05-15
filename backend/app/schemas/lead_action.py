@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from .base import BaseSchema
+from app.models.lead_action import ActionType
 
 
 class LeadActionBase(BaseSchema):
@@ -10,8 +11,8 @@ class LeadActionBase(BaseSchema):
     lead_id: int
     lead_status_id: Optional[int] = None
     call_id: Optional[int] = None
-    is_favorite: bool = False
-    last_action_time: datetime
+    action_type: ActionType
+    action_date: datetime
 
 
 class LeadActionCreate(LeadActionBase):
@@ -24,11 +25,10 @@ class LeadActionUpdate(BaseSchema):
     
     Все поля опциональные.
     """
-    
     lead_status_id: Optional[int] = None
     call_id: Optional[int] = None
-    is_favorite: Optional[bool] = None
-    last_action_time: Optional[datetime] = None
+    action_type: Optional[ActionType] = None
+    action_date: Optional[datetime] = None 
 
 
 class LeadActionResponse(LeadActionBase):

@@ -47,6 +47,17 @@ from .team_member import (
     TeamMemberUpdate,
     TeamMemberResponse,
 )
+from .favorite import (
+    FavoriteBase,
+    FavoriteCreate,
+    FavoriteResponse
+)
+from .user_session import (
+    UserSessionBase, 
+    UserSessionCreate, 
+    UserSessionUpdate,
+    UserSessionResponse
+)
 
 __all__ = [
     "BaseSchema",
@@ -81,4 +92,11 @@ __all__ = [
     "TeamMemberCreate",
     "TeamMemberUpdate",
     "TeamMemberResponse",
+    "FavoriteBase",
+    "FavoriteCreate",
+    "FavoriteResponse",
+    "UserSessionBase",
+    "UserSessionCreate",
+    "UserSessionUpdate",
+    "UserSessionResponse"    
 ]
