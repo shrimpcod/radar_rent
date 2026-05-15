@@ -6,7 +6,6 @@ from app.models.lead_action import ActionType
 
 class LeadActionBase(BaseSchema):
     """Базовые поля действия по лиду."""
-    
     user_id: int
     lead_id: int
     lead_status_id: Optional[int] = None
@@ -15,9 +14,12 @@ class LeadActionBase(BaseSchema):
     action_date: datetime
 
 
-class LeadActionCreate(LeadActionBase):
+class LeadActionCreate(BaseSchema):
     """Схема для создания действия по лиду."""
-    pass
+    lead_id: int
+    action_type: ActionType
+    lead_status_id: Optional[ActionType] = None
+    call_id: Optional[int] = None
 
 
 class LeadActionUpdate(BaseSchema):

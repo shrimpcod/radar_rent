@@ -18,7 +18,7 @@ async def get_user_actions(
     """Получить всю историю действий текущего пользователя."""
     return await get_current_user_lead_actions(db, current_user)
 
-@router.post("/{lead_id}", response_model=LeadActionResponse)
+@router.post("", response_model=LeadActionResponse)
 async def post_action(
     action_in: LeadActionCreate,
     db: AsyncSession = Depends(get_db),

@@ -4,11 +4,11 @@ from .base import Base
 import enum
 
 class ActionType(str, enum.Enum):
-    ADD_FAVORITE = "add_favorite"
-    DELETE_FAVORITE = "delete_favorite"
-    CALL = "call"
-    DOWNLOAD_PHOTOS = "download_photos"
-    GO_LINK = "go_link"
+    ADD_FAVORITE = "ADD_FAVORITE"
+    DELETE_FAVORITE = "DELETE_FAVORITE"
+    CALL = "CALL"
+    DOWNLOAD_PHOTOS = "DOWNLOAD_PHOTOS"
+    GO_LINK = "GO_LINK"
 
 class LeadAction(Base):
     __tablename__ = 'lead_actions'

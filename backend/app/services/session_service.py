@@ -13,7 +13,7 @@ async def track_user_activity(db: AsyncSession, user_id: int):
             and_(UserSession.user_id == user_id, UserSession.session_date == today)
         )
     )
-    session = result.scalar_one_or_none()
+    session = result.scalars().first()
 
     if not session:
         new_session = UserSession(
