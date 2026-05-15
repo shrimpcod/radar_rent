@@ -1,23 +1,25 @@
 import { useState } from 'react';
-import type { Lead, LeadAction } from '../../types/listings'
+import type { Lead, LeadAction, Favorite } from '../../types/listings'
 import { IoIosLink } from "react-icons/io";
 import { RxDownload } from "react-icons/rx";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { BiSolidPhoneCall } from "react-icons/bi";
-import { downloadPhotos, patchLeadAction } from '../../api/listings';
+import { downloadPhotos, postLeadAction, addToFavorites, removeFromFavorites } from '../../api/listings';
 import { useQueryClient } from "@tanstack/react-query"
 
 interface Props{
     leads: Lead[]
     newLeadIds: Set<number>
     userActions: LeadAction[]
+    favorites: Favorite[]
 }
 
-export default function ListingsTable({ leads, newLeadIds, userActions }: Props) {
-    const [favorites, setFavorites] = useState<'all' | 'favorites' | 'filters'>('all')
-    const favoriteIds = new Set(userActions.filter(a => a.is_favorite).map(a => a.lead_id))
-    const filteredLeads = favorites === "favorites" ? leads.filter(l => favoriteIds.has(l.id)) : leads
+export default function ListingsTable({ leads, newLeadIds, userActions, favorites }: Props) {
+    const [filterState, setFilterState] = useState<'all' | 'favorites' | 'filters'>('all')
     const queryClient = useQueryClient()
+
+    const favoriteIds = new Set(favorites.map(f => f.lead_id))
+    const filteredLeads = filterState === "favorites" ? leads.filter(l => favoriteIds.has(l.id)) : leads
 
     const filterButtons = [
         {label: 'Все', value: 'all'},
@@ -36,12 +38,15 @@ export default function ListingsTable({ leads, newLeadIds, userActions }: Props)
         {label: 'Действия'}, 
     ]
 
-    const commonActionsStyles = "text-lg cursor-pointer text-gray-700"
+    const commonActionsStyles = "text-lg cursor-pointer text-gray-700 hover:text-[#3D3FAA] transition-colors"
     const tableActions = [
         {
             label: 'открыть ссылку', 
             element: (_lead: Lead) => <IoIosLink />, 
-            fn: (lead: Lead) => lead.external_url && window.open(lead.external_url, '_blank', 'noopener,noreferrer'), 
+            fn: (lead: Lead) => {
+                if (lead.external_id) {window.open(lead.external_url ?? "", '_blank', 'noopener,noreferrer')};
+                postLeadAction({lead_id: lead.id, action_type: 'GO_LINK'})
+            },
             currentStyle: ''
         },
         {
@@ -49,7 +54,8 @@ export default function ListingsTable({ leads, newLeadIds, userActions }: Props)
             element: (_lead: Lead) => <RxDownload />, 
             fn: (lead: Lead) => { 
                 if (lead.photo_urls && lead.photo_urls.length > 0) {
-                    downloadPhotos(lead.photo_urls, lead.source ?? 'cian')
+                    downloadPhotos(lead.photo_urls, lead.source ?? "")
+                    postLeadAction({lead_id: lead.id, action_type: "DOWNLOAD_PHOTOS"})
                 }
             }, 
             currentStyle: ''
@@ -57,13 +63,25 @@ export default function ListingsTable({ leads, newLeadIds, userActions }: Props)
         {
             label: 'добавить в избранное', 
             element: (lead: Lead) => favoriteIds.has(lead.id) ? <FaStar className='text-yellow-400' /> : <FaRegStar />, 
-            fn: (lead: Lead) => patchLeadAction(lead.id, {is_favorite: !favoriteIds.has(lead.id)}).then(() => queryClient.invalidateQueries({ queryKey: ["lead-actions"]})), 
+            fn: async (lead: Lead) => {
+                if (favoriteIds.has(lead.id)) {
+                    await removeFromFavorites(lead.id)
+                    postLeadAction({lead_id: lead.id, action_type: 'DELETE_FAVORITE'}) 
+                } else {
+                    await addToFavorites(lead.id)
+                    postLeadAction({lead_id: lead.id, action_type: 'ADD_FAVORITE'})
+                }
+                queryClient.invalidateQueries({ queryKey: ['favorites']})
+            },
             currentStyle: ''
         },
         {
             label: 'позвонить собственнику', 
             element: (_lead: Lead) => <BiSolidPhoneCall />, 
-            fn: (lead: Lead) => alert(`Звоним ${lead.id} по номеру ${lead.phone_number}`), 
+            fn: (lead: Lead) => {
+                alert(`Звоним ${lead.id} по номеру ${lead.phone_number}`)
+                postLeadAction({lead_id: lead.id, action_type: 'CALL'})
+            }, 
             currentStyle: ''
         }, 
     ]
@@ -74,8 +92,8 @@ export default function ListingsTable({ leads, newLeadIds, userActions }: Props)
                 {filterButtons.map((btn) => (
                     <button
                         key={btn.value}
-                        onClick={() => setFavorites(btn.value as 'all' | 'favorites')}
-                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${favorites===btn.value ? 'bg-[#3D3FAA] text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                        onClick={() => setFilterState(btn.value as 'all' | 'favorites')}
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${filterState===btn.value ? 'bg-[#3D3FAA] text-white' : 'text-gray-500 hover:bg-gray-100'}`}
                     >
                         {btn.label}
                     </button>
@@ -105,7 +123,7 @@ export default function ListingsTable({ leads, newLeadIds, userActions }: Props)
                                 className={`border-t border-gray-100 text-sm text-gray-700 transition-colors duration-300 ${newLeadIds.has(lead.id) ? 'bg-green-100' : 'hover:bg-gray-50'}`}>
                                     <td className='px-4 py-3'>{lead.created_offer_at ? new Date(lead.created_offer_at).toLocaleString('ru-RU') : '-'}</td>
                                     <td className='px-4 py-3'>{lead.rooms_count === 0 ? 'Ст.' : `${lead.rooms_count}-к`} , {lead.area} м², {lead.floor}/{lead.floors_count} эт.</td>
-                                    <td className='px-4 py-3'>ЦИАН</td>
+                                    <td className='px-4 py-3'>{lead.source}</td>
                                     <td className='px-4 py-3'>{lead.price.toLocaleString('ru-RU')}</td>
                                     <td className='px-4 py-3'>{lead.address}</td>
                                     <td className='px-4 py-3'>{lead.phone_number}</td>

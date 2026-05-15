@@ -30,8 +30,15 @@ export interface LeadAction {
     id: number
     user_id: number
     lead_id: number
-    is_favorite: boolean
+    action_type: 'ADD_FAVORITE' | 'DELETE_FAVORITE' | 'CALL' | 'DOWNLOAD_PHOTOS' | 'GO_LINK'
     lead_status_id: number | null
-    call_id: number | null
-    last_action_time: string
+    call_id: number | null 
+    action_date: string
+}
+
+export interface Favorite {
+    id: number
+    user_id: number
+    lead_id: number
+    created_at: string
 }

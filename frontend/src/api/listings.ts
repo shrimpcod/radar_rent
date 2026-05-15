@@ -1,5 +1,5 @@
 import client from "./client"
-import type { Lead, LeadAction } from "../types/listings"
+import type { Lead, LeadAction, Favorite } from "../types/listings"
 import axios from "axios"
 
 export const getLeads = async (skip = 0, limit = 10): Promise<Lead[]> => {
@@ -28,17 +28,34 @@ export const downloadPhotos = async (photoUrls: string[], source: string): Promi
     window.URL.revokeObjectURL(url)
 }
 
-export const getLeadAction = async (leadId: number) => {
-    const response = await client.get(`/lead_actions/${leadId}`)
-    return response.data
-}
-
-export const patchLeadAction = async (leadId: number, params: {is_favorite?: boolean, lead_status_id?: number}) => {
-    const response = await client.patch(`/lead_actions/${leadId}`, null, { params })
-    return response.data
-}
-
 export const getUserLeadActions = async (): Promise<LeadAction[]> => {
     const response = await client.get<LeadAction[]>('/lead_actions')
     return response.data
 }
+
+export const postLeadAction = async (
+    data: {
+        lead_id: number,
+        action_type: string, 
+        lead_status_id?: number,
+        call_id?: number
+    }
+) => {
+    const response = await client.post(`/lead_actions`, data)
+    return response.data
+}
+
+export const getUserFavorites = async (): Promise<Favorite[]> => {
+    const response = await client.get<Favorite[]>('/favorites')
+    return response.data
+}
+
+export const addToFavorites = async (leadId: number): Promise<Favorite> => {
+    const response = await client.post<Favorite>('/favorites', {lead_id: leadId, user_id: 0})
+    return response.data
+}
+
+export const removeFromFavorites = async (leadId: number): Promise<void> => {
+    await client.delete(`/favorites/${leadId}`)
+}
+

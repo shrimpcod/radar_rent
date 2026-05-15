@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import StatsCards from "../features/listings/StatsCards"
 import ListingsTable from "../features/listings/ListingsTable"
-import type { LeadStats, Lead, LeadAction } from "../types/listings"
-import { getLeads, getLeadsCount, getUserLeadActions } from "../api/listings"
+import type { LeadStats, Lead, LeadAction, Favorite } from "../types/listings"
+import { getLeads, getLeadsCount, getUserLeadActions, getUserFavorites } from "../api/listings"
 
 const mockStats: LeadStats = {
     total_calls: 0,
@@ -29,6 +29,11 @@ export default function ListingsPage() {
     const {data: userActions } = useQuery<LeadAction[]>({
         queryKey: ["lead-actions"],
         queryFn: getUserLeadActions
+    })
+
+    const { data: favorites } = useQuery<Favorite[]>({
+        queryKey: ["favorites"],
+        queryFn: getUserFavorites
     })
 
     const [leads, setLeads] = useState<Lead[]>([])
@@ -68,7 +73,12 @@ export default function ListingsPage() {
             {isLoading ? (
                 <div className="text-gray-400 text-sm p-4">Загрузка...</div>
             ) : (
-                <ListingsTable leads={leads} newLeadIds={newLeadIds} userActions={userActions ?? []}/>
+                <ListingsTable 
+                    leads={leads} 
+                    newLeadIds={newLeadIds} 
+                    userActions={userActions ?? []}
+                    favorites={favorites ?? []}
+                />
             )}
             <div className="flex justify-end gap-2 mt-4">
                 {(() => {
