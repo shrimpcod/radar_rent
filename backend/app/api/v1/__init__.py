@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, agencies, positions, teams, team_members, users, leads, ws, lead_actions
+from app.api.v1.endpoints import auth, agencies, positions, teams, team_members, users, leads, ws, lead_actions, favorites
 
 api_router = APIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
@@ -11,3 +11,4 @@ api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(leads.router, prefix="/leads", tags=["leads"])
 api_router.include_router(ws.router, tags=["websocket"])
 api_router.include_router(lead_actions.router, prefix="/lead_actions", tags=["lead-actions"])
+api_router.include_router(favorites.router, prefix="/favorites", tags=["favorites"])

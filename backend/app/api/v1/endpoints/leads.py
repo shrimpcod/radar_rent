@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from ....db.session import get_db
-from ....services.lead_services import get_leads, get_leads_count
-from ....schemas.lead import LeadResponse
+from app.db.session import get_db
+from app.services.lead_services import get_leads, get_leads_count
+from app.schemas.lead import LeadResponse
 
 router = APIRouter()
 

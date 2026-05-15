@@ -10,6 +10,7 @@ from sqlalchemy import select
 from app.core.config import settings
 from app.models.user import User
 from app.db.session import get_db
+from app.services.session_service import track_user_activity
 
 # Контекст для хеширования паролей
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
@@ -123,9 +124,10 @@ async def get_current_user(
     if payload is None:
         raise credentials_exception
     
-    user_id = int(payload.get("sub"))
-    if user_id is None:
+    user_id_str = payload.get("sub")
+    if not user_id_str:
         raise credentials_exception
+    user_id = int(user_id_str)
     
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
@@ -135,7 +137,8 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> User:
     """Получение активного пользователя.
 
@@ -155,6 +158,7 @@ async def get_current_active_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Пользователь неактивен"
         )
+    await track_user_activity(db, current_user.id)
     return current_user
 
 
@@ -206,7 +210,7 @@ async def get_current_agency_head(
     from app.models.user import UserType
     
     #возможно в словии нужно or
-    if current_user.user_type != UserType.SUPERVISOR and not current_user.agency_id: 
+    if current_user.user_type != UserType.SUPERVISOR or current_user.agency_id is None: 
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Пользователь не является руководителем агентства"
