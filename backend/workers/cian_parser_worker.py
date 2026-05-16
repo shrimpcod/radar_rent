@@ -57,7 +57,7 @@ async def start_parser_worker():
 
     scheduler.add_job(
         fetch_and_queue_cian_leads,
-        trigger=IntervalTrigger(minutes=5),
+        trigger=IntervalTrigger(minutes=30),
         id="cian_parser",
         name="Parser cian",
         replace_existing=True
