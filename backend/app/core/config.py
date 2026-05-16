@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     TELEGRAM_PROXY: str | None = None
 
     PROXIES: str = ""
+
+    TZ: str | None = None
     
     class Config:
         env_file = ".env"

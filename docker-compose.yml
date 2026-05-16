@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U radar_user -d radar_rent"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis: 
     image: redis:7-alpine
@@ -19,6 +24,81 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --save 60 1 --loglevel warning
+
+  api: 
+    build:
+      context: ./backend
+    container_name: radar_rent_api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app 
+    ports: 
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ./backend/.env
+
+  worker_main:
+    build:
+      context: ./backend
+    container_name: radar_rent_worker_main
+    command: python -m workers.main_worker
+    volumes:
+      - ./backend:/app 
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ./backend/.env
+
+  worker_delayed:
+    build:
+      context: ./backend 
+    container_name: radar_rent_worker_delayed
+    command: python -m workers.delayed_worker
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ./backend/.env 
+
+  worker_parser:
+    build:
+      context: ./backend
+    container_name: radar_rent_worker_parser
+    command: python -m workers.cian_parser_worker
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ./backend/.env
+
+  frontend: 
+    build:
+      context: ./frontend
+    container_name: radar_rent_frontend
+    command: npm run dev -- --host 0.0.0.0
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
 
 volumes:
   postgres_data: 
